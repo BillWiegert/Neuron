@@ -630,7 +630,6 @@ function NEURON:controlOnUpdate(frame, elapsed)
 		NEURON.NeuronBar:controlOnUpdate(frame, elapsed)
 		NEURON.NeuronButton:cooldownsOnUpdate(frame, elapsed)
 		NEURON.NeuronZoneAbilityBar:controlOnUpdate(frame, elapsed)
-		NEURON.NeuronPetBar:controlOnUpdate(frame, elapsed)
 		NEURON.NeuronStatusBar:controlOnUpdate(frame, elapsed)
 
 		NEURON.elapsed = 0;
