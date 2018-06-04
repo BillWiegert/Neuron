@@ -68,7 +68,6 @@ NEURON['RegisteredGUIData'] = {}
 NEURON['MacroDrag'] = {}
 NEURON['StartDrag'] = false
 NEURON['maxActionID'] = 132
-NEURON['maxPetID'] = 10
 NEURON['maxStanceID'] = NUM_STANCE_SLOTS
 
 
@@ -1258,7 +1257,8 @@ function NEURON:ToggleEditFrames(show, hide)
 		NEURON.EditFrameShown = true
 
 		for index, editor in pairs(NEURON.EDITIndex) do
-			editor:Show(); editor.object.editmode = NEURON.EditFrameShown
+			editor:Show()
+			editor.object.editmode = NEURON.EditFrameShown
 
 			if (editor.object.bar) then
 				editor:SetFrameStrata(editor.object.bar:GetFrameStrata())
@@ -1281,7 +1281,8 @@ function NEURON:ToggleBindings(show, hide)
 		NEURON.BindingMode = false
 
 		for _, binder in pairs(NEURON.BINDIndex) do
-			binder:Hide(); binder.button.editmode = NEURON.BindingMode
+			binder:Hide()
+			binder.button.editmode = NEURON.BindingMode
 			binder:SetFrameStrata("LOW")
 			if (not NEURON.BarsShown) then
 				binder.button:SetGrid(binder.button)
@@ -1299,7 +1300,7 @@ function NEURON:ToggleBindings(show, hide)
 
 			if (binder.button.bar) then
 				binder:SetFrameStrata(binder.button.bar:GetFrameStrata())
-				binder:SetFrameLevel(binder.button.bar:GetFrameLevel()+4)
+				binder:SetFrameLevel(binder.button.bar:GetFrameLevel()+6)
 				binder.button:SetGrid(binder.button, true)
 			end
 		end

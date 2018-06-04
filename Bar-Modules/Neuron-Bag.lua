@@ -159,7 +159,6 @@ function NeuronBagBar:SetData(button, bar)
     if (bar) then
 
         button.bar = bar
-        test1 = button
 
         button:SetFrameStrata(bar.gdata.objectStrata)
         button:SetScale(bar.gdata.scale)
