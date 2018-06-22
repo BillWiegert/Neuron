@@ -10,17 +10,10 @@ local NeuronExtraBar = NEURON.NeuronExtraBar
 
 local XBTN = setmetatable({}, { __index = CreateFrame("CheckButton") })
 
-
-
-
-local SKINIndex = NEURON.SKINIndex
-
 local xbarsCDB
 local xbtnsCDB
 
 local L = LibStub("AceLocale-3.0"):GetLocale("Neuron")
-
-local SKIN = LibStub("Masque", true)
 
 local gDef = {
 	hidestates = ":extrabar0:",
@@ -34,13 +27,6 @@ local gDef = {
 
 local configData = {
 	stored = false,
-}
-
-local keyData = {
-	hotKeys = ":",
-	hotKeyText = ":",
-	hotKeyLock = false,
-	hotKeyPri = true,
 }
 
 
@@ -85,8 +71,38 @@ function NeuronExtraBar:OnInitialize()
 		BINDTEXT = true,
 		RANGEIND = true,
 		CDTEXT = true,
-		CDALPHA = true }, false, 65)
+		CDALPHA = true }, false, false)
 
+end
+
+--- **OnEnable** which gets called during the PLAYER_LOGIN event, when most of the data provided by the game is already present.
+--- Do more initialization here, that really enables the use of your addon.
+--- Register Events, Hook functions, Create Frames, Get information from
+--- the game that wasn't available in OnInitialize
+function NeuronExtraBar:OnEnable()
+
+	NeuronExtraBar:DisableDefault()
+
+	NeuronExtraBar:CreateBarsAndButtons()
+
+end
+
+
+--- **OnDisable**, which is only called when your addon is manually being disabled.
+--- Unhook, Unregister Events, Hide frames that you created.
+--- You would probably only use an OnDisable if you want to
+--- build a "standby" mode, or be able to toggle modules on/off.
+function NeuronExtraBar:OnDisable()
+
+end
+
+
+------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+
+function NeuronExtraBar:CreateBarsAndButtons()
 	if (CDB.xbarFirstRun) then
 
 		local bar = NEURON.NeuronBar:CreateNewBar("extrabar", 1, true)
@@ -110,33 +126,7 @@ function NeuronExtraBar:OnInitialize()
 			end
 		end
 	end
-
 end
-
---- **OnEnable** which gets called during the PLAYER_LOGIN event, when most of the data provided by the game is already present.
---- Do more initialization here, that really enables the use of your addon.
---- Register Events, Hook functions, Create Frames, Get information from
---- the game that wasn't available in OnInitialize
-function NeuronExtraBar:OnEnable()
-
-	NeuronExtraBar:DisableDefault()
-
-end
-
-
---- **OnDisable**, which is only called when your addon is manually being disabled.
---- Unhook, Unregister Events, Hide frames that you created.
---- You would probably only use an OnDisable if you want to
---- build a "standby" mode, or be able to toggle modules on/off.
-function NeuronExtraBar:OnDisable()
-
-end
-
-
-------------------------------------------------------------------------------
-
-
--------------------------------------------------------------------------------
 
 function NeuronExtraBar:DisableDefault()
 
@@ -152,21 +142,23 @@ function NeuronExtraBar:DisableDefault()
 
 	if disableExtraButton then
 		------Hiding the default blizzard
-		ExtraActionBarFrame:Hide()
-		ExtraActionBarFrame:SetPoint("BOTTOM", 0, -200)
+		--ExtraActionBarFrame:Hide()
+		--ExtraActionBarFrame:SetPoint("BOTTOM", 0, -200)
 		MainMenuBarVehicleLeaveButton:Hide()
 		MainMenuBarVehicleLeaveButton:SetPoint("BOTTOM", 0, -200)
+
+		--NeuronExtraBar:RawHook(ExtraActionBarFrame, "Show", function() end, true)
 	end
 
 end
 
 
 function NeuronExtraBar:GetSkinned(button)
-	NEURON.NeuronButton:GetSkinned(button)
+
 end
 
 function NeuronExtraBar:SetSkinned(button)
-	NEURON.NeuronButton:SetSkinned(button)
+
 end
 
 function NeuronExtraBar:SaveData(button)
@@ -179,60 +171,34 @@ function NeuronExtraBar:LoadData(button, spec, state)
 
 	local id = button.id
 
-	button.CDB = xbtnsCDB
+	button.DB = xbtnsCDB
 
-	if (button.CDB) then
+	if (button.DB) then
 
-		if (not button.CDB[id]) then
-			button.CDB[id] = {}
+		if (not button.DB[id]) then
+			button.DB[id] = {}
 		end
 
-		if (not button.CDB[id].config) then
-			button.CDB[id].config = CopyTable(configData)
+		if (not button.DB[id].config) then
+			button.DB[id].config = CopyTable(configData)
 		end
 
-		if (not button.CDB[id].keys) then
-			button.CDB[id].keys = CopyTable(keyData)
+		if (not button.DB[id]) then
+			button.DB[id] = {}
 		end
 
-		if (not button.CDB[id]) then
-			button.CDB[id] = {}
+		if (not button.DB[id].data) then
+			button.DB[id].data = {}
 		end
 
-		if (not button.CDB[id].keys) then
-			button.CDB[id].keys = CopyTable(keyData)
-		end
+		button.config = button.DB[id].config
 
-		if (not button.CDB[id].data) then
-			button.CDB[id].data = {}
-		end
-
-		NEURON:UpdateData(button.CDB[id].config, configData)
-		NEURON:UpdateData(button.CDB[id].keys, keyData)
-
-		button.config = button.CDB [id].config
-
-		if (CDB.perCharBinds) then
-			button.keys = button.CDB[id].keys
-		else
-			button.keys = button.CDB[id].keys
-		end
-
-		button.data = button.CDB[id].data
+		button.data = button.DB[id].data
 	end
 end
 
 function NeuronExtraBar:SetObjectVisibility(button, show)
 
-	if (not InCombatLockdown()) then
-
-		if HasExtraActionBar() or show then
-			button.iconframeicon:SetTexture(GetActionTexture(button.actionID))
-			button:Show()
-		elseif not NEURON.ButtonEditMode and not NEURON.BarEditMode and not NEURON.BindingMode then
-			button:Hide()
-		end
-	end
 end
 
 function NeuronExtraBar:SetAux(button)
@@ -240,27 +206,9 @@ function NeuronExtraBar:SetAux(button)
 
 end
 
-function NeuronExtraBar:SetExtraButtonTex(button)
-
-	local texture = GetOverrideBarSkin() or "Interface\\ExtraButton\\Default"
-	button.style:SetTexture(texture)
-
-end
-
 
 function NeuronExtraBar:LoadAux(button)
 
-	NEURON.NeuronBinder:CreateBindFrame(button, button.objTIndex)
-	NeuronExtraBar:CreateVehicleLeave(button, button.objTIndex)
-
-	button.style = button:CreateTexture(nil, "OVERLAY")
-	button.style:SetPoint("CENTER", -2, 1)
-	button.style:SetWidth(190)
-	button.style:SetHeight(95)
-
-	NeuronExtraBar:SetExtraButtonTex(button)
-
-	button.hotkey:SetPoint("TOPLEFT", -4, -6)
 end
 
 function NeuronExtraBar:SetDefaults(button)
@@ -276,59 +224,51 @@ function NeuronExtraBar:GetDefaults(button)
 end
 
 function NeuronExtraBar:SetData(button, bar)
-	NEURON.NeuronButton:SetData(button, bar)
+	if (bar) then
+
+		button.bar = bar
+
+		button:SetFrameStrata(bar.gdata.objectStrata)
+		button:SetScale(bar.gdata.scale)
+
+	end
+
+	button:SetFrameLevel(4)
 end
 
 function NeuronExtraBar:SetType(button, save)
 
-	button:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
-	button:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
-	button:RegisterEvent("UPDATE_POSSESS_BAR")
-	button:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR")
-	button:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
-	button:RegisterEvent("ZONE_CHANGED")
-	button:RegisterEvent("SPELLS_CHANGED")
-
-	button.actionID = 169
-
-	button:SetAttribute("type", "action")
-	button:SetAttribute("*action1", self.actionID)
-
-	button:SetAttribute("useparent-unit", false)
-	button:SetAttribute("unit", ATTRIBUTE_NOOP)
-
-	button:SetScript("OnEvent", function(self, event, ...) NeuronExtraBar:OnEvent(self, event, ...) end)
-	button:HookScript("OnShow", function(self) NeuronExtraBar:SetExtraButtonTex(self) end)
-
-	button:WrapScript(button, "OnShow", [[
-					for i=1,select('#',(":"):split(self:GetAttribute("hotkeys"))) do
-						self:SetBindingClick(self:GetAttribute("hotkeypri"), select(i,(":"):split(self:GetAttribute("hotkeys"))), self:GetName())
-					end
-					]])
-
-	button:WrapScript(button, "OnHide", [[
-					if (not self:GetParent():GetAttribute("concealed")) then
-						for key in gmatch(self:GetAttribute("hotkeys"), "[^:]+") do
-							self:ClearBinding(key)
-						end
-					end
-					]])
-
-	button:SetSkinned(button)
-end
+	button:SetWidth(ExtraActionButton1:GetWidth()+3)
+	button:SetHeight(ExtraActionButton1:GetHeight()+3)
 
 
-function NeuronExtraBar:OnEvent(button, event, ...)
+	button:SetHitRectInsets(button:GetWidth()/2, button:GetWidth()/2, button:GetHeight()/2, button:GetHeight()/2)
 
-	NeuronExtraBar:DisableDefault()
-	button:SetObjectVisibility(button)
+	button.element = ExtraActionButton1
+
+	local objects = NEURON:GetParentKeys(button.element)
+
+	for k,v in pairs(objects) do
+		local name = v:gsub(button.element:GetName(), "")
+		button[name:lower()] = _G[v]
+	end
+
+	button.element:ClearAllPoints()
+	button.element:SetParent(button)
+	button.element:Show()
+	button.element:SetPoint("CENTER", button, "CENTER")
+	button.element:SetScale(1)
+
+
+	--button:SetSkinned(button)
+
 
 end
 
 
-----------------------------------------------------------------------------
------------------------------Vehicle Leave Button---------------------------
-----------------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
 
 
 function NeuronExtraBar:VehicleLeave_OnEvent(button, event, ...)
