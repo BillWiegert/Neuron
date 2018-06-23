@@ -68,10 +68,15 @@ function NeuronExtraBar:OnInitialize()
 		HIDDEN = true,
 		LOCKBAR = true,
 		TOOLTIPS = true,
-		BINDTEXT = true,
-		RANGEIND = true,
-		CDTEXT = true,
-		CDALPHA = true }, false, false)
+		BINDTEXT = false,
+		RANGEIND = false,
+		CDTEXT = false,
+		CDALPHA = false }, false, false)
+
+
+	NeuronExtraBar:DisableDefault()
+	NeuronExtraBar:CreateBarsAndButtons()
+
 
 end
 
@@ -80,10 +85,6 @@ end
 --- Register Events, Hook functions, Create Frames, Get information from
 --- the game that wasn't available in OnInitialize
 function NeuronExtraBar:OnEnable()
-
-	NeuronExtraBar:DisableDefault()
-
-	NeuronExtraBar:CreateBarsAndButtons()
 
 end
 
@@ -142,12 +143,8 @@ function NeuronExtraBar:DisableDefault()
 
 	if disableExtraButton then
 		------Hiding the default blizzard
-		--ExtraActionBarFrame:Hide()
-		--ExtraActionBarFrame:SetPoint("BOTTOM", 0, -200)
 		MainMenuBarVehicleLeaveButton:Hide()
 		MainMenuBarVehicleLeaveButton:SetPoint("BOTTOM", 0, -200)
-
-		--NeuronExtraBar:RawHook(ExtraActionBarFrame, "Show", function() end, true)
 	end
 
 end
@@ -258,9 +255,6 @@ function NeuronExtraBar:SetType(button, save)
 	button.element:Show()
 	button.element:SetPoint("CENTER", button, "CENTER")
 	button.element:SetScale(1)
-
-
-	--button:SetSkinned(button)
 
 
 end
